@@ -89,7 +89,7 @@ public class Randomize extends HttpServlet {
          }
          
          out.printf("%s %s that can %s\n", finalAdj, finalNoun, finalVerb);
-         out.println("<a href=/HelloWorld/simpleFormSearch.html>\n\nRandomize</a> <br>");
+         out.println("<form action=\"Randomize\" method=\"POST\"><input type='submit' value='Generate Rondomized Idea' /> </form>");
          out.println("</body></html>");
          rs.close();
          preparedStatement.close();
