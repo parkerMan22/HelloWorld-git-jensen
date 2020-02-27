@@ -27,6 +27,9 @@ public class Randomize extends HttpServlet {
    void search(HttpServletResponse response) throws IOException {
 	  Random random = new Random();
 	  int randomInteger = random.nextInt(59) + 1;
+	  String finalAdj = "ADJ";
+	  String finalNoun = "NOUN";
+	  String finalVerb = "VERB";
 	  System.out.println("randomInteger:" + randomInteger);
       response.setContentType("text/html");
       PrintWriter out = response.getWriter();
@@ -45,27 +48,48 @@ public class Randomize extends HttpServlet {
          DBConnection.getDBConnection(getServletContext());
          connection = DBConnection.connection;
 
-         //Change selectSQL to different table types
+         //Change selectSQL to different noun table
          String selectSQL = "SELECT * FROM Nouns";
          preparedStatement = connection.prepareStatement(selectSQL);
 
          ResultSet rs = preparedStatement.executeQuery();
 
-         while (rs.next()) {//Loop through every row in table to get variables
+         while (rs.next()) {//Loop through every row in table to get variables for noun
             int id = rs.getInt("id");
             String noun = rs.getString("noun").trim();
-
-            //use variables
-            //out.println("ID: " + id + ", ");
-            //out.println("Noun: " + noun + ", ");
-            
             if (id == randomInteger) {
-                //out.println("COREECT ID: " + id + ", ");
-                //out.println("Noun: " + noun + ", ");
-            	out.printf("A ADJ %s that can VERB\n", noun);
-            }
+            	finalNoun = noun;
+            }   
          }
-         out.println("<a href=/HelloWorld/simpleFormSearch.html>Randomize</a> <br>");
+         
+   	  	 randomInteger = random.nextInt(59) + 1;
+         //Change selectSQL to different noun table
+         selectSQL = "SELECT * FROM Verbs";
+         preparedStatement = connection.prepareStatement(selectSQL);
+         rs = preparedStatement.executeQuery();
+         while (rs.next()) {//Loop through every row in table to get variables for noun
+            int id = rs.getInt("id");
+            String verb = rs.getString("verb").trim();
+            if (id == randomInteger) {
+            	finalVerb = verb;
+            }   
+         }
+         
+   	  	 randomInteger = random.nextInt(64) + 1;
+         //Change selectSQL to different noun table
+         selectSQL = "SELECT * FROM Adjective";
+         preparedStatement = connection.prepareStatement(selectSQL);
+         rs = preparedStatement.executeQuery();
+         while (rs.next()) {//Loop through every row in table to get variables for noun
+            int id = rs.getInt("id");
+            String adj = rs.getString("adjective").trim();
+            if (id == randomInteger) {
+            	finalAdj = adj;
+            }   
+         }
+         
+         out.printf("%s %s that can %s\n", finalAdj, finalNoun, finalVerb);
+         out.println("<a href=/HelloWorld/simpleFormSearch.html>\n\nRandomize</a> <br>");
          out.println("</body></html>");
          rs.close();
          preparedStatement.close();
