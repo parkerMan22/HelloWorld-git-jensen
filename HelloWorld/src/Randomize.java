@@ -25,36 +25,28 @@ public class Randomize extends HttpServlet {
    }
 
    void search(HttpServletResponse response) throws IOException {
-	  Random random = new Random();
-	  int randomInteger = random.nextInt(59) + 1;
 	  String finalAdj = "ADJ";
 	  String finalNoun = "NOUN";
 	  String finalVerb = "VERB";
-	  System.out.println("randomInteger:" + randomInteger);
       response.setContentType("text/html");
       PrintWriter out = response.getWriter();
       String title = "Generated Idea!";
       String docType = "<!doctype html public \"-//w3c//dtd html 4.0 " + //
             "transitional//en\">\n"; //
-      out.println(docType + //
-            "<html>\n" + //
-            "<head><title>" + title + "</title></head>\n" + //
-            "<body bgcolor=\"#f0f0f0\">\n" + //
-            "<h1 align=\"center\">" + title + "</h1>\n");
-
+      
       Connection connection = null;
       PreparedStatement preparedStatement = null;
       try {
          DBConnection.getDBConnection(getServletContext());
          connection = DBConnection.connection;
 
-         //Change selectSQL to different noun table
+         //Get Random Noun from Noun Database
+   	  	 Random random = new Random();
+   	  	 int randomInteger = random.nextInt(59) + 1;
          String selectSQL = "SELECT * FROM Nouns";
          preparedStatement = connection.prepareStatement(selectSQL);
-
          ResultSet rs = preparedStatement.executeQuery();
-
-         while (rs.next()) {//Loop through every row in table to get variables for noun
+         while (rs.next()) {//Loop through every row in table to get correct noun
             int id = rs.getInt("id");
             String noun = rs.getString("noun").trim();
             if (id == randomInteger) {
@@ -62,12 +54,12 @@ public class Randomize extends HttpServlet {
             }   
          }
          
+         //Get Random Verb from Verb Database
    	  	 randomInteger = random.nextInt(59) + 1;
-         //Change selectSQL to different noun table
          selectSQL = "SELECT * FROM Verbs";
          preparedStatement = connection.prepareStatement(selectSQL);
          rs = preparedStatement.executeQuery();
-         while (rs.next()) {//Loop through every row in table to get variables for noun
+         while (rs.next()) {//Loop through every row in table to get correct verb
             int id = rs.getInt("id");
             String verb = rs.getString("verb").trim();
             if (id == randomInteger) {
@@ -75,12 +67,12 @@ public class Randomize extends HttpServlet {
             }   
          }
          
+         //Get Random Adjective from Adjective Database
    	  	 randomInteger = random.nextInt(64) + 1;
-         //Change selectSQL to different noun table
          selectSQL = "SELECT * FROM Adjective";
          preparedStatement = connection.prepareStatement(selectSQL);
          rs = preparedStatement.executeQuery();
-         while (rs.next()) {//Loop through every row in table to get variables for noun
+         while (rs.next()) {//Loop through every row in table to get correct Adjective
             int id = rs.getInt("id");
             String adj = rs.getString("adjective").trim();
             if (id == randomInteger) {
@@ -88,9 +80,58 @@ public class Randomize extends HttpServlet {
             }   
          }
          
-         out.printf("%s %s that can %s\n", finalAdj, finalNoun, finalVerb);
-         out.println("<form action=\"Randomize\" method=\"POST\"><input type='submit' value='Generate Rondomized Idea' /> </form>");
-         out.println("</body></html>");
+         //Output answer with HTML formatting
+         String randomIdea = String.format("A(n) <h1>%s %s that can %s\n</h1>", finalAdj, finalNoun, finalVerb);
+         out.println(docType + //
+           	  "<html>"+
+       	      "<head>"+
+       	      "<style>"+
+       	      "header {"+
+       	          "background-color:#FFC78F;"+
+       	          "color:#529CB3;"+
+       	          "text-align:center;"+
+       	          "padding:5px;"+	 
+       	      "}"+
+       	      "nav {"+
+       	          "line-height:30px;"+
+       	          "background-color:#8FE5FF;"+
+       	          "height:300px;"+
+       	          "width:100px;"+
+       	          "float:left;"+
+       	          "padding:5px;"+	      
+       	      "}"+
+       	      "section {"+
+       	          "width:350px;"+
+       	          "float:left;"+
+       	          "padding:10px;"+	 	 
+       	      "}"+
+       	      "footer {"+
+       	          "background-color:#FFC78F;"+
+       	          "color:#529CB3;"+
+       	          "clear:both;"+
+       	          "text-align:center;"+
+       	          "padding:5px;"+	 	 
+       	      "}"+
+       	      "</style>"+
+       	      "</head>"+
+       	
+       	      "<body style='background-color:#8FE5FF;'>"+
+       	      "<header>"+
+       	      "<h1> Random Idea Generator </h1>"+
+       	      "</header>"+
+
+       	      "<section>"+
+       	      	"<h1>" + randomIdea + "</h1>"+
+       	      	"<form action='Randomize' method='POST'>"+
+       	      		"<input type='submit' value='Generate Rondomized Idea' />"+
+       	      	"</form>"+
+       	      "</section>"+
+       	      "<footer>"+
+       	      "Copyright"+
+       	      "</footer>"+
+       	      "</body>"+
+       	      "</html>");
+
          rs.close();
          preparedStatement.close();
          connection.close();
