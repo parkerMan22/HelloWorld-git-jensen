@@ -81,7 +81,7 @@ public class Randomize extends HttpServlet {
          }
          
          //Output answer with HTML formatting
-         String randomIdea = String.format("A(n) <h1>%s %s that can %s\n</h1>", finalAdj, finalNoun, finalVerb);
+         String randomIdea = String.format("<h1>Design a(n) %s %s that can %s\n</h1>", finalAdj, finalNoun, finalVerb);
          out.println(docType + //
            	  "<html>"+
        	      "<head>"+
